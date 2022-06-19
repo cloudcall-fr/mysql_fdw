@@ -843,12 +843,13 @@ mysqlIterateForeignScan(ForeignScanState *node)
 					);
 				text_result[column->length] = '\0';
 
-				if strcmp(
-					text_result, 
-					"0000-00-00 00:00:00"
-					) {
-						festate->table->column[attid].is_null=true;
-					}
+				if (
+						strcmp(
+								text_result,
+								"0000-00-00 00:00:00"))
+				{
+					festate->table->column[attid].is_null = true;
+				}
 				break;
 			}
 			
