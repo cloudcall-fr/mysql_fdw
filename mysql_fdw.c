@@ -799,6 +799,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 	int			i;
 	ForeignScan *fsplan = (ForeignScan *) node->ss.ps.plan;
 	List	   *fdw_private = fsplan->fdw_private;
+	char		 *mysql_null_date = "0000-00-00 00:00:00";
 
 	natts = attinmeta->tupdesc->natts;
 
@@ -826,7 +827,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 			Oid			pgtype = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypid;
 			int32		pgtypmod = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypmod;
 			char	   *text_result = NULL;
-
+			
 			switch (pgtype)
 			{
 				case DATEOID:
@@ -845,12 +846,12 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				elog(WARNING, "text_result %s", text_result);
 				elog(WARNING, "strcmp %s", strcmp(
 								text_result,
-								"0000-00-00 00:00:00"));
+								mysql_null_date));
 
 				if (
 						strcmp(
 								text_result,
-								"0000-00-00 00:00:00"))
+								mysql_null_date))
 				{
 					festate->table->column[attid].is_null = true;
 				}
