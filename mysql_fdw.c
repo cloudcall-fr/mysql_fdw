@@ -833,7 +833,6 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				case TIMEOID:
 				case TIMESTAMPOID:
 				case TIMESTAMPTZOID:
-				elog(WARNING, "valueDatum %s", festate->table->column[attid].value);
 
 				text_result = (char *) palloc(festate->table->column[attid].length + 1);
 				memcpy(
@@ -842,6 +841,8 @@ mysqlIterateForeignScan(ForeignScanState *node)
 					festate->table->column[attid].length
 					);
 				text_result[column->length] = '\0';
+
+				elog(WARNING, "text_result %s", text_result);
 
 				if (
 						strcmp(
