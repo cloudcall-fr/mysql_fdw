@@ -121,7 +121,8 @@ mysql_convert_to_pg(Oid pgtyp, int pgtypmod, mysql_column *column)
 		case TIMESTAMPOID:
 		case TIMESTAMPTZOID:
 			elog(WARNING, "type%u", pgtyp);
-			elog(WARNING, "value%u", (char *) column->value);
+			elog(WARNING, "value %u", (char *) column->value);
+			valueDatum = CStringGetDatum((char *) column->value);
 			break;
 
 		default:
