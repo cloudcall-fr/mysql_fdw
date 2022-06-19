@@ -827,26 +827,22 @@ mysqlIterateForeignScan(ForeignScanState *node)
 			Oid			pgtype = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypid;
 			int32		pgtypmod = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypmod;
 			char	   *text_result = NULL;
-			
+
+			// convert mysql date 0000-00-00 00:00:00
+			// to postgresql null
 			switch (pgtype)
 			{
-				case DATEOID:
-				case TIMEOID:
-				case TIMESTAMPOID:
-				case TIMESTAMPTZOID:
+			case DATEOID:
+			case TIMEOID:
+			case TIMESTAMPOID:
+			case TIMESTAMPTZOID:
 
-				text_result = (char *) palloc(festate->table->column[attid].length + 1);
+				text_result = (char *)palloc(festate->table->column[attid].length + 1);
 				memcpy(
-					text_result, 
-					(char *) festate->table->column[attid].value, 
-					festate->table->column[attid].length
-					);
+						text_result,
+						(char *)festate->table->column[attid].value,
+						festate->table->column[attid].length);
 				text_result[festate->table->column[attid].length] = '\0';
-
-				elog(WARNING, "text_result %s", text_result);
-				elog(WARNING, "strcmp %d", strcmp(
-								text_result,
-								mysql_null_date));
 
 				if (strcmp(
 								text_result,
@@ -854,16 +850,15 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				{
 					festate->table->column[attid].is_null = true;
 				}
-				elog(WARNING, "null %d", festate->table->column[attid].is_null);
 				break;
-				}
+			}
 
-				nulls[attnum] = festate->table->column[attid].is_null;
-				if (!festate->table->column[attid].is_null)
-					dvalues[attnum] = mysql_convert_to_pg(pgtype, pgtypmod,
-																								&festate->table->column[attid]);
+			nulls[attnum] = festate->table->column[attid].is_null;
+			if (!festate->table->column[attid].is_null)
+				dvalues[attnum] = mysql_convert_to_pg(pgtype, pgtypmod,
+																							&festate->table->column[attid]);
 
-				attid++;
+			attid++;
 		}
 
 		ExecClearTuple(tupleSlot);
