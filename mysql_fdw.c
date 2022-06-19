@@ -848,23 +848,22 @@ mysqlIterateForeignScan(ForeignScanState *node)
 								text_result,
 								mysql_null_date));
 
-				if (
-						strcmp(
+				if (strcmp(
 								text_result,
-								mysql_null_date))
+								mysql_null_date) == 0)
 				{
 					festate->table->column[attid].is_null = true;
 				}
 				elog(WARNING, "null %d", festate->table->column[attid].is_null);
 				break;
-			}
-			
-			nulls[attnum] = festate->table->column[attid].is_null;
-			if (!festate->table->column[attid].is_null)
-				dvalues[attnum] = mysql_convert_to_pg(pgtype, pgtypmod,
-													  &festate->table->column[attid]);
+				}
 
-			attid++;
+				nulls[attnum] = festate->table->column[attid].is_null;
+				if (!festate->table->column[attid].is_null)
+					dvalues[attnum] = mysql_convert_to_pg(pgtype, pgtypmod,
+																								&festate->table->column[attid]);
+
+				attid++;
 		}
 
 		ExecClearTuple(tupleSlot);
