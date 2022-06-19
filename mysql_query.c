@@ -117,6 +117,7 @@ mysql_convert_to_pg(Oid pgtyp, int pgtypmod, mysql_column *column)
 			break;
 
 		default:
+			elog(WARNING, "type%u", pgtyp);
 			valueDatum = CStringGetDatum((char *) column->value);
 	}
 
