@@ -121,8 +121,14 @@ mysql_convert_to_pg(Oid pgtyp, int pgtypmod, mysql_column *column)
 		case TIMESTAMPOID:
 		case TIMESTAMPTZOID:
 			elog(WARNING, "type%u", pgtyp);
-			elog(WARNING, "value %u", (char *) column->value);
 			valueDatum = CStringGetDatum((char *) column->value);
+			elog(WARNING, "valueDatum %u", valueDatum);
+
+			text_result = (char *) palloc(column->length + 1);
+			memcpy(text_result, (char *) column->value, column->length);
+			text_result[column->length] = '\0';
+			elog(WARNING, "text_result %u", (char *) text_result);
+
 			break;
 
 		default:
