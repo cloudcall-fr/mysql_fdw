@@ -840,7 +840,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 					(char *) festate->table->column[attid].value, 
 					festate->table->column[attid].length
 					);
-				text_result[column->length] = '\0';
+				text_result[festate->table->column[attid].length] = '\0';
 
 				elog(WARNING, "text_result %s", text_result);
 
