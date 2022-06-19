@@ -832,10 +832,10 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				case TIMEOID:
 				case TIMESTAMPOID:
 				case TIMESTAMPTZOID:
-				elog(WARNING, "valueDatum %s", festate->table->column[attid]->value);
+				elog(WARNING, "valueDatum %s", festate->table->column[attid].value);
 
 				if strcmp(
-					festate->table->column[attid]->value, 
+					festate->table->column[attid].value, 
 					"0000-00-00 00:00:00"
 					) {
 						festate->table->column[attid].is_null=true;
