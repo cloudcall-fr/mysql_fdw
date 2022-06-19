@@ -123,11 +123,12 @@ mysql_convert_to_pg(Oid pgtyp, int pgtypmod, mysql_column *column)
 			elog(WARNING, "type%u", pgtyp);
 			valueDatum = CStringGetDatum((char *) column->value);
 			elog(WARNING, "valueDatum %u", valueDatum);
+			elog(WARNING, "value %u", column->value);
 
 			text_result = (char *) palloc(column->length + 1);
 			memcpy(text_result, (char *) column->value, column->length);
 			text_result[column->length] = '\0';
-			elog(WARNING, "text_result %u", (char *) text_result);
+			elog(WARNING, "text_result %u", text_result);
 
 			break;
 
