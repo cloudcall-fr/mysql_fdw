@@ -799,7 +799,9 @@ mysqlIterateForeignScan(ForeignScanState *node)
 	int			i;
 	ForeignScan *fsplan = (ForeignScan *) node->ss.ps.plan;
 	List	   *fdw_private = fsplan->fdw_private;
-	char		 *mysql_null_date = "0000-00-00 00:00:00";
+	char		 *mysql_null_date_time = "0000-00-00 00:00:00";
+	char		 *mysql_null_date = "0000-00-00";
+	char		 *mysql_null_time = "00:00:00";
 
 	natts = attinmeta->tupdesc->natts;
 
@@ -844,9 +846,16 @@ mysqlIterateForeignScan(ForeignScanState *node)
 						festate->table->column[attid].length);
 				text_result[festate->table->column[attid].length] = '\0';
 
-				if (strcmp(
-								text_result,
-								mysql_null_date) == 0)
+				if (
+						(strcmp(
+								 text_result,
+								 mysql_null_date_time) == 0) ||
+						(strcmp(
+								 text_result,
+								 mysql_null_date) == 0) ||
+						(strcmp(
+								 text_result,
+								 mysql_null_time) == 0))
 				{
 					festate->table->column[attid].is_null = true;
 				}
