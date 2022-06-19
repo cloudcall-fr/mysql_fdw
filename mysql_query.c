@@ -116,19 +116,8 @@ mysql_convert_to_pg(Oid pgtyp, int pgtypmod, mysql_column *column)
 			valueDatum = CStringGetDatum((char *) text_result);
 			break;
 
-		case DATEOID:
-		case TIMEOID:
-		case TIMESTAMPOID:
-		case TIMESTAMPTZOID:
-			elog(WARNING, "type%u", pgtyp);
-			valueDatum = CStringGetDatum((char *) column->value);
-			elog(WARNING, "date valueDatum %s", valueDatum);
-			break;
-
 		default:
 			valueDatum = CStringGetDatum((char *) column->value);
-			elog(WARNING, "valueDatum %s", valueDatum);
-
 	}
 
 	value_datum = OidFunctionCall3(typeinput, valueDatum,

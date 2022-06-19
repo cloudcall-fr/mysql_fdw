@@ -65,6 +65,8 @@
 #include "utils/selfuncs.h"
 #include "utils/syscache.h"
 
+#include "string.h"
+
 /* Declarations for dynamic loading */
 PG_MODULE_MAGIC;
 
@@ -824,6 +826,23 @@ mysqlIterateForeignScan(ForeignScanState *node)
 			Oid			pgtype = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypid;
 			int32		pgtypmod = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypmod;
 
+			switch (pgtype)
+			{
+				case DATEOID:
+				case TIMEOID:
+				case TIMESTAMPOID:
+				case TIMESTAMPTZOID:
+				elog(WARNING, "valueDatum %s", festate->table->column[attid]->value);
+
+				if strcmp(
+					festate->table->column[attid]->value, 
+					"0000-00-00 00:00:00"
+					) {
+						festate->table->column[attid].is_null=true;
+					}
+				break;
+			}
+			
 			nulls[attnum] = festate->table->column[attid].is_null;
 			if (!festate->table->column[attid].is_null)
 				dvalues[attnum] = mysql_convert_to_pg(pgtype, pgtypmod,
