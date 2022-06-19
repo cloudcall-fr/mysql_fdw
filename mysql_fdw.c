@@ -825,6 +825,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 			int			attnum = lfirst_int(lc) - 1;
 			Oid			pgtype = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypid;
 			int32		pgtypmod = TupleDescAttr(attinmeta->tupdesc, attnum)->atttypmod;
+			char	   *text_result = NULL;
 
 			switch (pgtype)
 			{
@@ -834,8 +835,16 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				case TIMESTAMPTZOID:
 				elog(WARNING, "valueDatum %s", festate->table->column[attid].value);
 
+				text_result = (char *) palloc(festate->table->column[attid].length + 1);
+				memcpy(
+					text_result, 
+					(char *) festate->table->column[attid].value, 
+					festate->table->column[attid].length
+					);
+				text_result[column->length] = '\0';
+
 				if strcmp(
-					CStringGetDatum((char *) festate->table->column[attid].value), 
+					text_result, 
 					"0000-00-00 00:00:00"
 					) {
 						festate->table->column[attid].is_null=true;
