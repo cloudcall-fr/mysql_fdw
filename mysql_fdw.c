@@ -835,7 +835,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				elog(WARNING, "valueDatum %s", festate->table->column[attid].value);
 
 				if strcmp(
-					festate->table->column[attid].value, 
+					CStringGetDatum((char *) festate->table->column[attid].value), 
 					"0000-00-00 00:00:00"
 					) {
 						festate->table->column[attid].is_null=true;
