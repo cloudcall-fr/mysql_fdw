@@ -844,7 +844,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				text_result[festate->table->column[attid].length] = '\0';
 
 				elog(WARNING, "text_result %s", text_result);
-				elog(WARNING, "strcmp %s", strcmp(
+				elog(WARNING, "strcmp %d", strcmp(
 								text_result,
 								mysql_null_date));
 
@@ -855,7 +855,7 @@ mysqlIterateForeignScan(ForeignScanState *node)
 				{
 					festate->table->column[attid].is_null = true;
 				}
-				elog(WARNING, "null %s", festate->table->column[attid].is_null);
+				elog(WARNING, "null %d", festate->table->column[attid].is_null);
 				break;
 			}
 			
